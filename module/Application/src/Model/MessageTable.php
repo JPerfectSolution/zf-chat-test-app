@@ -4,6 +4,7 @@ namespace Application\Model;
 
 use RuntimeException;
 use Zend\Db\TableGateway\TableGatewayInterface;
+use Zend\Db\Sql\Select;
 
 class MessageTable
 {
@@ -16,7 +17,9 @@ class MessageTable
 
     public function fetchAll()
     {
-        return $this->tableGateway->select();
+        $select = new Select($this->tableGateway->getTable());
+        $select->order('created DESC');
+        return $this->tableGateway->selectWith($select);
     }
 
     public function getMessage($id)
@@ -37,7 +40,7 @@ class MessageTable
     public function saveMessage(Message $message)
     {
         $data = [
-            'created' => $message->created,
+            'created' => date('Y-m-d H:i:s'),
             'text' => $message->text,
         ];
 
@@ -45,6 +48,16 @@ class MessageTable
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
+            
+            $select = new Select($this->tableGateway->getTable());
+            $select->order('created ASC');
+            $result = $this->tableGateway->selectWith($select);
+            
+            for($cnt = $result->count(); $cnt > 10; $cnt-- ) {
+                $row = $result->current();
+                $this->deleteMessage($row->id);
+                $result->next();
+            }
             return;
         }
 

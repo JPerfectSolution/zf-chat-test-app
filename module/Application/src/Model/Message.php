@@ -10,7 +10,7 @@ class Message
 
   public function exchangeArray(array $data) {
     $this->id       = !empty($data['id']) ? $data['id']:null;
-    $this->created  = !empty($data['created']) ? $data['created']: null;
-    $this->text     = !empty($data['text']) ? $data['text']: date('Y-m-d H:i:s');
+    $this->created  = !empty($data['created']) ? $data['created']: date('Y-m-d H:i:s');
+    $this->text     = !empty($data['text']) ? $data['text']: '';
   }
 }

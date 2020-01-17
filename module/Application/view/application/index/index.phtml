@@ -1,12 +1,12 @@
 <h1 class="text-center mt-5 mb-5">Simple Chat Test Project</h1>
 
-<form class="d-flex justify-content-center mb-4">
-    <div class="form-group mx-sm-3 mb-2">
+<div class="d-flex justify-content-center mb-4">
+    <div class="form-group mx-sm-3 mb-2 " style="flex-grow: 1; max-width: 300px">
         <label for="messageText" class="sr-only">Message Text</label>
         <input type="text" class="form-control" id="messageText" placeholder="Let's type something here!">
     </div>
-    <button type="submit" class="btn btn-success mb-2">Send</button>
-</form>
+    <button id="sendBtn" class="btn btn-success mb-2">Send</button>
+</div>
 
 <div class="border rounded p-3">
     <table class="table">
@@ -16,11 +16,35 @@
                 <th scope="col">text</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="msg-history">
+        <?php foreach($messages as $message) : ?>
             <tr>
-                <td>2020-02-03</td>
-                <td>Hello World!</td>
+                <td><?= $message->created ?></td>
+                <td><?= $message->text ?></td>
             </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+<script>
+    var addMessage = function() {
+        var msg = ($('#messageText').val());
+        if(msg.length>0) {
+            $.post('/application/add', {message: msg}, function(result) {
+                var html = ''
+                result.forEach(item => {
+                    html += `<tr><td>${item.created}</td><td>${item.text}</td></tr>`
+                })
+                $('#msg-history').html(html);
+                $('#messageText').val('');
+            })
+        }
+    }
+    $('#sendBtn').click(addMessage);
+    $('#messageText').keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            addMessage();
+        }
+    })
+</script>

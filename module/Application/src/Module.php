@@ -33,7 +33,7 @@ class Module implements ConfigProviderInterface
                     $dbAdapter = $container->get(AdapterInterface::class);
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Message());
-                    return new TableGateway('message', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('history', $dbAdapter, null, $resultSetPrototype);
                 },
             ],
         ];
