@@ -7,11 +7,19 @@
 
 namespace Application\Controller;
 
+use Application\Model\MessageTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+    private $table;
+
+    public function __construct(MessageTable $table) 
+    {
+        $this->table = $table;
+    }
+    
     public function indexAction()
     {
         return new ViewModel();
